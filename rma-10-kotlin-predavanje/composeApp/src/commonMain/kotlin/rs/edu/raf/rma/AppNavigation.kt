@@ -26,7 +26,7 @@ enum class AppTab { Posts, Passwords, Movies }
 
 @Composable
 fun AppNavigation() {
-    var selectedTab by remember { mutableStateOf(AppTab.Posts) }
+    var selectedTab by remember { mutableStateOf(AppTab.Movies) }
 
     Scaffold(
         bottomBar = {
