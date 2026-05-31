@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -17,10 +18,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import rs.edu.raf.rma.movie.MovieApp
 import rs.edu.raf.rma.passwords.PasswordsNavigation
 import rs.edu.raf.rma.posts.PostsNavigation
 
-enum class AppTab { Posts, Passwords }
+enum class AppTab { Posts, Passwords, Movies }
 
 @Composable
 fun AppNavigation() {
@@ -41,6 +43,12 @@ fun AppNavigation() {
                     icon = { Icon(Icons.Default.Lock, contentDescription = null) },
                     label = { Text("Passwords") },
                 )
+                NavigationBarItem(
+                    selected = selectedTab == AppTab.Movies,
+                    onClick = { selectedTab = AppTab.Movies },
+                    icon = { Icon(Icons.Default.Movie, contentDescription = null) },
+                    label = { Text("Movies") },
+                )
             }
         },
     ) { paddingValues ->
@@ -57,6 +65,7 @@ fun AppNavigation() {
                 AppTab.Passwords -> PasswordsNavigation(
                     startDestination = "passwords",
                 )
+                AppTab.Movies -> MovieApp()
             }
         }
     }
