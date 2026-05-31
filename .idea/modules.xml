@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/app/android/android.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/app/android/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/androidDeviceTest/androidDeviceTest.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/androidDeviceTest/androidDeviceTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/androidHostTest/androidHostTest.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/androidHostTest/androidHostTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/androidMain/androidMain.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/androidMain/androidMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/androidMain/androidMain2.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/androidMain/androidMain2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/commonMain/commonMain.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/commonMain/commonMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/commonMain/commonMain2.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/commonMain/commonMain2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/commonTest/commonTest.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/commonTest/commonTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/app/desktop/desktop.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/app/desktop/desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/iosMain/iosMain.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/iosMain/iosMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/iosMain/iosMain2.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/iosMain/iosMain2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/jvmMain/jvmMain.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/composeApp/src/jvmMain/jvmMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/jvmMain/jvmMain2.iml" filepath="$PROJECT_DIR$/rma-10-kotlin-predavanje/kotlin/src/jvmMain/jvmMain2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/rma-10-plus-navigacioni-elementi.iml" filepath="$PROJECT_DIR$/.idea/rma-10-plus-navigacioni-elementi.iml" />
+    </modules>
+  </component>
+</project>
