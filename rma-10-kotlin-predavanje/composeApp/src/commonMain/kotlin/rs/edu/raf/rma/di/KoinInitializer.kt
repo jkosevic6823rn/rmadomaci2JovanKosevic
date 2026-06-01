@@ -10,6 +10,7 @@ import rs.edu.raf.rma.networking.di.networkingModule
 import rs.edu.raf.rma.passwords.di.passwordsModule
 import rs.edu.raf.rma.posts.di.postsModule
 import rs.edu.raf.rma.posts.splash.di.splashModule
+import rs.edu.raf.rma.showtime.auth.di.showtimeAuthModule
 
 fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
     return startKoin {
@@ -22,6 +23,7 @@ fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
             passwordsModule,
             postsModule,
             movieModule,
+            showtimeAuthModule,
         )
     }
 }
