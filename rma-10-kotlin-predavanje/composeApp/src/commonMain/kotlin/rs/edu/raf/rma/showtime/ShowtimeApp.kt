@@ -7,8 +7,8 @@ import androidx.compose.runtime.getValue
 import org.koin.compose.koinInject
 import rs.edu.raf.rma.core.auth.AuthStore
 import rs.edu.raf.rma.core.auth.model.AuthState
-import rs.edu.raf.rma.movie.MovieApp
 import rs.edu.raf.rma.showtime.auth.AuthNavigation
+import rs.edu.raf.rma.showtime.home.ShowtimeHome
 
 @Composable
 fun ShowtimeApp() {
@@ -18,7 +18,7 @@ fun ShowtimeApp() {
     MaterialTheme {
         when (authState) {
             AuthState.Unauthenticated -> AuthNavigation()
-            is AuthState.Authenticated -> MovieApp()
+            is AuthState.Authenticated -> ShowtimeHome()
         }
     }
 }

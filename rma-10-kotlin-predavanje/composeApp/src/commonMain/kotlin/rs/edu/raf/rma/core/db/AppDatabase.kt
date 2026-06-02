@@ -14,6 +14,9 @@ import rs.edu.raf.rma.posts.db.PostCategoryCrossRef
 import rs.edu.raf.rma.posts.db.PostDao
 import rs.edu.raf.rma.posts.db.PostDetailsEntity
 import rs.edu.raf.rma.posts.db.PostEntity
+import rs.edu.raf.rma.showtime.quiz.data.db.QuizDao
+import rs.edu.raf.rma.showtime.quiz.data.db.QuizMovieEntity
+import rs.edu.raf.rma.showtime.quiz.data.db.QuizResultEntity
 
 @Database(
     entities = [
@@ -21,14 +24,17 @@ import rs.edu.raf.rma.posts.db.PostEntity
         PostDetailsEntity::class,
         CategoryEntity::class,
         PostCategoryCrossRef::class,
+        QuizMovieEntity::class,
+        QuizResultEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 @TypeConverters(DateConverters::class)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun postDao(): PostDao
+    abstract fun quizDao(): QuizDao
 }
 
 // The Room compiler generates the `actual` implementations.
@@ -41,6 +47,7 @@ fun buildAppDatabase(
     builder: RoomDatabase.Builder<AppDatabase>,
 ): AppDatabase {
     return builder
+        .fallbackToDestructiveMigration(dropAllTables = true)
         .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()
