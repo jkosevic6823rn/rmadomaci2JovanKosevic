@@ -102,38 +102,13 @@ private fun HttpClientConfig<*>.installAuthPlugin(
                 return@run originalCall
             }
 
-            // Token expired
-            // Trebalo bi da osvezimo access token sa refresh tokenom
-            // ali ovo nece biti potrebno za drugi projekat.
-            // Od prilike bi ovako izgledalo, kada bismo radili:
-
-
-
-            val newAuthState = runBlocking {
-                // Zovemo refresh funkciju i vracamo njen rezultat
-//                val authStore = authStoreLazy.value
-//                authStore.refresh()
-
-                // U ovom primeru pretvaramo se da je refresh token istekao
-                AuthState.Unauthenticated
+            // Token je istekao / nevažeći. Refresh token ne postoji za ovaj projekat,
+            // pa radimo prinudnu odjavu: brišemo auth podatke, što prebacuje
+            // authState na Unauthenticated i ShowtimeApp vraća na login ekran.
+            runBlocking {
+                authStoreLazy.value.clearAuthData()
             }
-
-            @Suppress("IMPOSSIBLE_IS_CHECK_WARNING")
-            when (newAuthState) {
-                is AuthState.Authenticated -> {
-                    // Refresh uspeo - ponavljamo zahtev sa novim tokenom
-                    request.headers.remove(name = HttpHeaders.Authorization)
-                    request.headers.append(
-                        name = HttpHeaders.Authorization,
-                        value = "Bearer ${newAuthState.data.accessToken}",
-                    )
-                    proceed(request)
-                }
-                AuthState.Unauthenticated -> {
-                    // Refresh puko - vracamo originalni 401 response
-                    originalCall
-                }
-            }
+            originalCall
         }
     }
 })

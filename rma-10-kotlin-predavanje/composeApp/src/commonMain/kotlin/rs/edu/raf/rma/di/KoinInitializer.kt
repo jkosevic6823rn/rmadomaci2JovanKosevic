@@ -11,6 +11,7 @@ import rs.edu.raf.rma.passwords.di.passwordsModule
 import rs.edu.raf.rma.posts.di.postsModule
 import rs.edu.raf.rma.posts.splash.di.splashModule
 import rs.edu.raf.rma.showtime.auth.di.showtimeAuthModule
+import rs.edu.raf.rma.showtime.library.di.libraryModule
 import rs.edu.raf.rma.showtime.profile.di.showtimeProfileModule
 import rs.edu.raf.rma.showtime.quiz.di.quizModule
 
@@ -27,6 +28,7 @@ fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
             movieModule,
             showtimeAuthModule,
             quizModule,
+            libraryModule,
             showtimeProfileModule,
         )
     }

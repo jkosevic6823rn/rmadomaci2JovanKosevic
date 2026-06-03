@@ -62,6 +62,16 @@ fun ProfileScreen(
         }
 
         Spacer(Modifier.height(24.dp))
+        Text("Library", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(8.dp))
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                InfoRow("Favorites", state.favoritesCount.toString())
+                InfoRow("Watchlist", state.watchlistCount.toString())
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
         Text("Quiz stats", style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(8.dp))
         Card(modifier = Modifier.fillMaxWidth()) {

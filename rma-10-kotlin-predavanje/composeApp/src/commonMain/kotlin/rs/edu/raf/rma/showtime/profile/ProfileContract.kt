@@ -7,6 +7,8 @@ interface ProfileContract {
         val username: String = "",
         val bestScore: Double? = null,
         val gamesPlayed: Int = 0,
+        val favoritesCount: Int = 0,
+        val watchlistCount: Int = 0,
         val error: String? = null,
     )
 

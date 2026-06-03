@@ -7,6 +7,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import rs.edu.raf.rma.core.db.AppDatabase
 import rs.edu.raf.rma.movie.data.network.MovieService
 import rs.edu.raf.rma.movie.data.network.createMovieService
 import rs.edu.raf.rma.movie.data.repository.MovieRepository
@@ -35,7 +36,9 @@ val movieModule = module {
             .createMovieService()
     }
 
-    single { MovieRepository(get()) }
+    single { get<AppDatabase>().movieDao() }
+
+    single { MovieRepository(service = get(), movieDao = get()) }
 
     viewModelOf(::MovieListViewModel)
     viewModelOf(::FilterViewModel)

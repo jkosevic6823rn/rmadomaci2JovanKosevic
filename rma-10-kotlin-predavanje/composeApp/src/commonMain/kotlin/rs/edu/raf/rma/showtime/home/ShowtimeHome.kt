@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Quiz
@@ -20,11 +22,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import rs.edu.raf.rma.movie.MovieApp
+import rs.edu.raf.rma.showtime.library.FavoritesScreen
+import rs.edu.raf.rma.showtime.library.WatchlistScreen
 import rs.edu.raf.rma.showtime.profile.ProfileScreen
 import rs.edu.raf.rma.showtime.quiz.QuizScreen
 
 private enum class ShowtimeTab(val label: String, val icon: ImageVector) {
     Movies("Movies", Icons.Default.Movie),
+    Favorites("Favorites", Icons.Default.Favorite),
+    Watchlist("Watchlist", Icons.Default.Bookmark),
     Quiz("Quiz", Icons.Default.Quiz),
     Profile("Profile", Icons.Default.Person),
 }
@@ -54,6 +60,8 @@ fun ShowtimeHome() {
         ) {
             when (selectedTab) {
                 ShowtimeTab.Movies -> MovieApp()
+                ShowtimeTab.Favorites -> FavoritesScreen()
+                ShowtimeTab.Watchlist -> WatchlistScreen()
                 ShowtimeTab.Quiz -> QuizScreen(onExit = { selectedTab = ShowtimeTab.Movies })
                 ShowtimeTab.Profile -> ProfileScreen()
             }

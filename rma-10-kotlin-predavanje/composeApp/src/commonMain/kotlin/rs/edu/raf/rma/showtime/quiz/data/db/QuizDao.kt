@@ -36,4 +36,8 @@ interface QuizDao {
 
     @Query("SELECT * FROM quiz_results ORDER BY playedAt DESC")
     fun observeResults(): Flow<List<QuizResultEntity>>
+
+    /** Briše lokalnu istoriju rezultata (poziva se pri odjavi). */
+    @Query("DELETE FROM quiz_results")
+    suspend fun clearResults()
 }

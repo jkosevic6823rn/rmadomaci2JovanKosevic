@@ -19,21 +19,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,7 +68,16 @@ fun MovieDetailsScreen(onBack: () -> Unit) {
     val viewModel: MovieDetailsViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
     val uriHandler = LocalUriHandler.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(state.actionMessage) {
+        state.actionMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            viewModel.processIntent(MovieDetailsIntent.MessageShown)
+        }
+    }
+
+    Box(Modifier.fillMaxSize()) {
     when {
         state.isLoading -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -174,6 +194,14 @@ fun MovieDetailsScreen(onBack: () -> Unit) {
                         .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    // Favorite / Watchlist akcije (optimistički toggle, Room = SSOT)
+                    LibraryActions(
+                        isFavorite = state.isFavorite,
+                        inWatchlist = state.inWatchlist,
+                        onToggleFavorite = { viewModel.processIntent(MovieDetailsIntent.ToggleFavorite) },
+                        onToggleWatchlist = { viewModel.processIntent(MovieDetailsIntent.ToggleWatchlist) },
+                    )
+
                     // Ratings
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (movie.imdbRating != null) {
@@ -257,6 +285,53 @@ fun MovieDetailsScreen(onBack: () -> Unit) {
 
                     Spacer(Modifier.height(24.dp))
                 }
+            }
+        }
+    }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
+    }
+}
+
+@Composable
+private fun LibraryActions(
+    isFavorite: Boolean,
+    inWatchlist: Boolean,
+    onToggleFavorite: () -> Unit,
+    onToggleWatchlist: () -> Unit,
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (isFavorite) {
+            FilledTonalButton(onClick = onToggleFavorite, modifier = Modifier.weight(1f)) {
+                Icon(Icons.Default.Favorite, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Favorited")
+            }
+        } else {
+            OutlinedButton(onClick = onToggleFavorite, modifier = Modifier.weight(1f)) {
+                Icon(Icons.Default.FavoriteBorder, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Favorite")
+            }
+        }
+
+        if (inWatchlist) {
+            FilledTonalButton(
+                onClick = onToggleWatchlist,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.filledTonalButtonColors(),
+            ) {
+                Icon(Icons.Default.Bookmark, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("In Watchlist")
+            }
+        } else {
+            OutlinedButton(onClick = onToggleWatchlist, modifier = Modifier.weight(1f)) {
+                Icon(Icons.Default.BookmarkBorder, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Watchlist")
             }
         }
     }

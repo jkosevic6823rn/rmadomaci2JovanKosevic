@@ -7,13 +7,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
 import rs.edu.raf.rma.showtime.auth.data.network.ShowtimeAuthApi
-import rs.edu.raf.rma.showtime.auth.domain.AuthRepository
+import rs.edu.raf.rma.showtime.library.data.LibraryRepository
 import rs.edu.raf.rma.showtime.quiz.data.QuizRepository
+import rs.edu.raf.rma.showtime.session.SessionManager
 
 class ProfileViewModel(
     private val authApi: ShowtimeAuthApi,
-    private val authRepository: AuthRepository,
+    private val sessionManager: SessionManager,
     private val quizRepository: QuizRepository,
+    private val libraryRepository: LibraryRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileContract.UiState())
@@ -22,6 +24,7 @@ class ProfileViewModel(
     init {
         loadProfile()
         observeStats()
+        syncLibrary()
     }
 
     fun setEvent(event: ProfileContract.UiEvent) {
@@ -59,9 +62,24 @@ class ProfileViewModel(
                 setState { copy(gamesPlayed = count) }
             }
         }
+        viewModelScope.launch {
+            libraryRepository.observeFavoritesCount().collect { count ->
+                setState { copy(favoritesCount = count) }
+            }
+        }
+        viewModelScope.launch {
+            libraryRepository.observeWatchlistCount().collect { count ->
+                setState { copy(watchlistCount = count) }
+            }
+        }
+    }
+
+    /** Osveži liste sa servera da brojevi budu tačni i kad se Profile otvori prvi. */
+    private fun syncLibrary() {
+        viewModelScope.launch { libraryRepository.refresh() }
     }
 
     private fun logout() {
-        viewModelScope.launch { authRepository.logout() }
+        viewModelScope.launch { sessionManager.logout() }
     }
 }

@@ -30,35 +30,43 @@ class MovieListViewModel(private val repository: MovieRepository) : ViewModel() 
     val state: StateFlow<MovieListState> = _state.asStateFlow()
 
     init {
+        observeMovies()
         processIntent(MovieListIntent.LoadMovies)
     }
 
     fun processIntent(intent: MovieListIntent) {
         when (intent) {
-            is MovieListIntent.LoadMovies -> loadMovies()
+            is MovieListIntent.LoadMovies -> refresh()
             is MovieListIntent.ChangeSortBy -> {
                 _state.value = _state.value.copy(sortBy = intent.sortBy)
-                loadMovies()
+                refresh()
             }
             is MovieListIntent.ApplyFilters -> {
                 _state.value = _state.value.copy(filters = intent.filters)
-                loadMovies()
+                refresh()
             }
         }
     }
 
-    private fun loadMovies() {
+    /** Room je SSOT — lista se uvek čita iz baze. */
+    private fun observeMovies() {
+        viewModelScope.launch {
+            repository.observeMovies().collect { movies ->
+                _state.value = _state.value.copy(movies = movies)
+            }
+        }
+    }
+
+    /** Povuče sa servera prema trenutnom sort/filteru i upiše u Room. */
+    private fun refresh() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
             try {
-                val response = repository.getMovies(
+                repository.refreshMovies(
                     sortBy = _state.value.sortBy,
-                    filters = _state.value.filters
+                    filters = _state.value.filters,
                 )
-                _state.value = _state.value.copy(
-                    movies = response.items,
-                    isLoading = false
-                )
+                _state.value = _state.value.copy(isLoading = false)
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
                     isLoading = false,

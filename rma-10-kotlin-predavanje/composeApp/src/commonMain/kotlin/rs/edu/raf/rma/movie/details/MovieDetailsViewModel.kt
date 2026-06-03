@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import rs.edu.raf.rma.movie.data.model.Movie
 import rs.edu.raf.rma.movie.data.model.MovieImage
+import rs.edu.raf.rma.movie.data.model.MovieListItem
 import rs.edu.raf.rma.movie.data.model.PersonSummary
 import rs.edu.raf.rma.movie.data.repository.MovieRepository
+import rs.edu.raf.rma.showtime.library.data.LibraryRepository
 
 data class MovieDetailsState(
     val movie: Movie? = null,
@@ -18,17 +20,24 @@ data class MovieDetailsState(
     val images: List<MovieImage> = emptyList(),
     val trailerKey: String? = null,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isFavorite: Boolean = false,
+    val inWatchlist: Boolean = false,
+    val actionMessage: String? = null,
 )
 
 sealed class MovieDetailsIntent {
     object Load : MovieDetailsIntent()
     object Retry : MovieDetailsIntent()
+    object ToggleFavorite : MovieDetailsIntent()
+    object ToggleWatchlist : MovieDetailsIntent()
+    object MessageShown : MovieDetailsIntent()
 }
 
 class MovieDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val repository: MovieRepository
+    private val repository: MovieRepository,
+    private val libraryRepository: LibraryRepository,
 ) : ViewModel() {
 
     private val movieId: String = savedStateHandle.get<String>(MOVIE_ID) ?: ""
@@ -38,11 +47,15 @@ class MovieDetailsViewModel(
 
     init {
         processIntent(MovieDetailsIntent.Load)
+        observeLibraryState()
     }
 
     fun processIntent(intent: MovieDetailsIntent) {
         when (intent) {
             is MovieDetailsIntent.Load, is MovieDetailsIntent.Retry -> loadDetails()
+            is MovieDetailsIntent.ToggleFavorite -> toggleFavorite()
+            is MovieDetailsIntent.ToggleWatchlist -> toggleWatchlist()
+            is MovieDetailsIntent.MessageShown -> _state.value = _state.value.copy(actionMessage = null)
         }
     }
 
@@ -68,6 +81,50 @@ class MovieDetailsViewModel(
                 )
             }
         }
+    }
+
+    private fun observeLibraryState() {
+        viewModelScope.launch {
+            libraryRepository.observeIsFavorite(movieId).collect { isFav ->
+                _state.value = _state.value.copy(isFavorite = isFav)
+            }
+        }
+        viewModelScope.launch {
+            libraryRepository.observeInWatchlist(movieId).collect { inList ->
+                _state.value = _state.value.copy(inWatchlist = inList)
+            }
+        }
+    }
+
+    private fun toggleFavorite() {
+        val snapshot = currentSnapshot() ?: return
+        viewModelScope.launch {
+            libraryRepository.toggleFavorite(snapshot).onFailure {
+                _state.value = _state.value.copy(actionMessage = "Couldn't update Favorites.")
+            }
+        }
+    }
+
+    private fun toggleWatchlist() {
+        val snapshot = currentSnapshot() ?: return
+        viewModelScope.launch {
+            libraryRepository.toggleWatchlist(snapshot).onFailure {
+                _state.value = _state.value.copy(actionMessage = "Couldn't update Watchlist.")
+            }
+        }
+    }
+
+    private fun currentSnapshot(): MovieListItem? {
+        val movie = _state.value.movie ?: return null
+        return MovieListItem(
+            imdbId = movie.imdbId,
+            title = movie.title,
+            year = movie.year,
+            imdbRating = movie.imdbRating,
+            imdbVotes = movie.imdbVotes,
+            posterPath = movie.posterPath,
+            genres = movie.genres,
+        )
     }
 }
 
